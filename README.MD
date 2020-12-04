@@ -8,4 +8,4 @@ Application toute simple réalisée en JS :)
 Cliquer sur le bouton pour lancer la simulation.
 
 ## TODO 
-- cliqer sur une case pour activer / desactiver des cases.
+- cliquer sur une case pour activer / desactiver des cases.
