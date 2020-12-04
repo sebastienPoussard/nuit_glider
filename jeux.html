@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Gamedev Canvas Workshop</title>
+    <style>
+        * { padding: 0; margin: 0; }
+        canvas { background: #eee; display: block; margin: 0 auto; }
+        #lebouton {    
+                    text-align:center;
+                    margin:auto;
+                    }
+    </style>
+</head>
+<body>
+
+<canvas id="myCanvas" width="300" height="300"></canvas>
+<br/>
+<div id="lebouton">
+    <button  onclick="start()">Lancer le jeux de la vie</button>
+</div>
+<script>
+    // obtenir les context ss forme de variable
+	var canvas = document.getElementById("myCanvas");
+    var ctx = canvas.getContext("2d");
+    // former un rectangle
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        var dx = 2;
+        var dy = -2;
+        ctx.beginPath();
+        ctx.arc(x, y, 10, 0, Math.PI*2);
+        ctx.fillStyle = "#0095DD";
+        ctx.fill();
+        ctx.closePath();
+        x += dx;
+        y += dy;
+        console.log(x)
+    }
+    
+    // setInterval(draw, 10);
+
+    // func dessiner la grille
+    function grille() {
+        for (let i = 10; i<canvas.width; i+=10) {
+            colonne(i);
+        }
+        for (let i = 10; i<canvas.height; i+=10) {
+            ligne(i);
+        }
+    }
+    // func dessiner une colonne 
+    function colonne(depart_x) {
+        ctx.beginPath();
+        ctx.moveTo(depart_x, 0);
+        ctx.lineTo(depart_x, canvas.height);
+        ctx.stroke(); 
+    }
+    // func dessiner une ligne
+    function ligne(depart_y) {
+        ctx.beginPath();
+        ctx.moveTo(0, depart_y);
+        ctx.lineTo(canvas.width, depart_y);
+        ctx.stroke(); 
+    }
+
+
+    // creer un rectangle
+    // parametres multiplié par 10
+    function rectangle(x, y) {
+        x *= 10;
+        y *= 10;
+        ctx.beginPath();
+        ctx.rect(x, y, 10, 10);
+        ctx.fill()
+        ctx.stroke();
+        ctx.closePath();
+    }
+    // passer un tour
+    function tour() {
+
+    }
+
+    // scan et remplis les cases
+    function scan() {
+        for (let i = 0 ; i < etat.length; i++) {
+            for (let j = 0 ; j < etat[i].length ; j++) {
+                if (etat[i][j] == true) {
+                    rectangle(i,j);
+                }
+            }
+        }
+    }
+
+    function nbVoisins(x,y) {
+        res = 0;
+        // haut gauche
+        if (y > 0 && x > 0) {
+            if (etat[x-1][y-1] == true) {
+                res += 1;
+            }
+        }
+        // haut
+        if (y > 0) {
+            if (etat[x][y-1] == true) {
+                res += 1;
+            }
+        }
+        // haut droite
+        if (y > 0 && x < etat[y].length-1) {
+            if (etat[x+1][y-1] == true ) {
+                res += 1;
+            }
+        }
+        // gauche
+        if (x > 0 ) {
+            if (etat[x-1][y] == true ) {
+                res += 1;
+            }
+        }
+        // droite
+        if (x < etat[y].length-1 ) {
+            if (etat[x+1][y] == true ) {
+                res += 1;
+            }
+        }
+        // bas gauche
+        if (y < etat.length-1 && x > 0) {
+            if (etat[x-1][y+1] == true ) {
+                res += 1;
+            }
+        }
+        // bas 
+        if (y < etat.length-1) {
+            if (etat[x][y+1] == true ) {
+                res += 1;
+            }
+        }
+        // bas droite
+        if (y < etat.length-1 && x < etat[x].length-1) {
+            if (etat[x+1][y+1] == true ) {
+                res += 1;
+            }
+        }
+        return res;
+    }
+
+    function jouerTour() {
+        // regarder chaque cellule
+        etat_new = Array.from(Array(30), () => new Array(30));
+        for (let i = 0 ; i < etat.length; i++) {
+            for (let j = 0 ; j < etat[i].length ; j++) {
+                nb = nbVoisins(i,j);
+                if (nb == 3) {
+                    etat_new[i][j] = true;
+                } else if (nb == 2) {
+                    etat_new[i][j] = etat[i][j];
+                } else {
+                    etat_new[i][j] = false;
+                }
+            }
+        }
+        etat = etat_new;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        grille()
+        scan();
+    }
+
+    // fonction pour lancer la simulation
+    function start() {
+        setInterval(jouerTour, 100)
+    }
+
+    // main
+    etat = Array.from(Array(30), () => new Array(30));
+    etat[11][10] = true;
+    etat[12][11] = true;
+    etat[10][12] = true;
+    etat[11][12] = true;
+    etat[12][12] = true;
+
+    etat[5][5] = true;
+    etat[4][5] = true;
+    etat[3][5] = true;
+    grille();
+    scan();
+    
+
+</script>
+
+</body>
+</html>
